@@ -1,0 +1,45 @@
+[gd_scene load_steps=7 format=3 uid="uid://dmtvt8yb7tx74"]
+
+[ext_resource type="PackedScene" uid="uid://bnwhxs8mv4yx" path="res://Scenes/player.tscn" id="1_lc1oi"]
+[ext_resource type="PackedScene" uid="uid://dgm4usfh07idc" path="res://Scenes/camera.tscn" id="2_8od7v"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_8od7v"]
+size = Vector2(100, 100)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_qc4db"]
+data = PackedVector3Array(15.6575, 0, 14.975, -15.6575, 0, 14.975, 15.6575, 0, -14.975, -15.6575, 0, 14.975, -15.6575, 0, -14.975, 15.6575, 0, -14.975)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_8od7v"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_qc4db"]
+
+[node name="TEST" type="Node3D"]
+
+[node name="AreaNavegation" type="NavigationRegion3D" parent="."]
+
+[node name="Piso" type="MeshInstance3D" parent="AreaNavegation"]
+mesh = SubResource("PlaneMesh_8od7v")
+skeleton = NodePath("../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="AreaNavegation/Piso"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AreaNavegation/Piso/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_qc4db")
+
+[node name="Player" parent="." instance=ExtResource("1_lc1oi")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0533524, 0.980124, 0.0454545)
+
+[node name="Camera" parent="." node_paths=PackedStringArray("target") instance=ExtResource("2_8od7v")]
+target = NodePath("../Player")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -0.0110652, 0.999939, 0, -0.999939, -0.0110652, 0, 12.2054, 0)
+
+[node name="BodyTEST" type="CharacterBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="BodyTEST"]
+shape = SubResource("CapsuleShape3D_8od7v")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="BodyTEST"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.76634, 1.83418, 0.47346)
+mesh = SubResource("CapsuleMesh_qc4db")

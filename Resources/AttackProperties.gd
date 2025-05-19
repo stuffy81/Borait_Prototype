@@ -1,0 +1,4 @@
+class_name AttackProperties extends Resource
+
+@export var impulse_attack : float = 0.0
+@export var demage : float = 0.0

@@ -1,0 +1,135 @@
+[gd_scene load_steps=20 format=3 uid="uid://bnwhxs8mv4yx"]
+
+[ext_resource type="Script" uid="uid://b51m1hebs7ssv" path="res://Scripts/Player.gd" id="1_v0iea"]
+[ext_resource type="PackedScene" uid="uid://cjab8iohs25rp" path="res://Scenes/state_machine.tscn" id="2_cvnsp"]
+[ext_resource type="Script" uid="uid://ckol6w8wh1kok" path="res://Resources/PropertiesCharacters.gd" id="2_vgqql"]
+[ext_resource type="Script" uid="uid://cwq3s6boj6xqk" path="res://Scripts/PlayerStates/IdlePlayer.gd" id="3_6t5aa"]
+[ext_resource type="Script" uid="uid://cwr3gqvh6px7a" path="res://Resources/AttackProperties.gd" id="3_8erm5"]
+[ext_resource type="Script" uid="uid://g0leeo8w2srt" path="res://Scripts/PlayerStates/MovePlayer.gd" id="5_fkybt"]
+[ext_resource type="Script" uid="uid://1ia4fsnhkemn" path="res://Scripts/PlayerStates/AttackMeleePlayer.gd" id="6_3smsa"]
+[ext_resource type="Script" uid="uid://b6maau87ndfip" path="res://Scripts/PlayerStates/LaunchObjects.gd" id="7_8erm5"]
+
+[sub_resource type="Resource" id="Resource_fkybt"]
+script = ExtResource("2_vgqql")
+speed = 350.0
+health = 0.0
+speed_tween = 0.5
+metadata/_custom_type_script = "uid://ckol6w8wh1kok"
+
+[sub_resource type="Resource" id="Resource_f1ek2"]
+script = ExtResource("3_8erm5")
+impulse_attack = 5.0
+demage = 0.0
+metadata/_custom_type_script = "uid://cwr3gqvh6px7a"
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_f60y1"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_f60y1"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_f60y1"]
+material = SubResource("StandardMaterial3D_f60y1")
+size = Vector3(0.775, 0.555, 0.69)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_v0iea"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_3smsa"]
+size = Vector3(6.02, 0.125, 6.115)
+
+[sub_resource type="Animation" id="Animation_vgqql"]
+resource_name = "IDLE"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ModelPlayer:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_3smsa"]
+resource_name = "ATTACK_MELEE"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ModelPlayer:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0.546288, 0.942478, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_8erm5"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ModelPlayer:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_fkybt"]
+_data = {
+&"ATTACK_MELEE": SubResource("Animation_3smsa"),
+&"IDLE": SubResource("Animation_vgqql"),
+&"RESET": SubResource("Animation_8erm5")
+}
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_v0iea")
+properties_characters = SubResource("Resource_fkybt")
+properties_attack = SubResource("Resource_f1ek2")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_f60y1")
+
+[node name="ModelPlayer" type="Node3D" parent="."]
+
+[node name="Head" type="MeshInstance3D" parent="ModelPlayer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.40951, 0.256003)
+mesh = SubResource("BoxMesh_f60y1")
+skeleton = NodePath("../..")
+
+[node name="Body" type="MeshInstance3D" parent="ModelPlayer"]
+mesh = SubResource("CapsuleMesh_v0iea")
+skeleton = NodePath("../..")
+
+[node name="StateMachine" parent="." node_paths=PackedStringArray("state_initial") instance=ExtResource("2_cvnsp")]
+state_initial = NodePath("IDLE")
+
+[node name="IDLE" type="Node" parent="StateMachine"]
+script = ExtResource("3_6t5aa")
+
+[node name="MOVE" type="Node" parent="StateMachine"]
+script = ExtResource("5_fkybt")
+
+[node name="ATTACK_MELEE" type="Node" parent="StateMachine"]
+script = ExtResource("6_3smsa")
+
+[node name="LAUNCH_OBJECTS" type="Node" parent="StateMachine"]
+script = ExtResource("7_8erm5")
+
+[node name="AreaAttack" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AreaAttack"]
+shape = SubResource("BoxShape3D_3smsa")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_fkybt")
+}
