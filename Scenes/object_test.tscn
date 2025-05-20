@@ -1,0 +1,24 @@
+[gd_scene load_steps=6 format=3 uid="uid://dsxmhlpynpqyv"]
+
+[ext_resource type="Script" uid="uid://b7qnqn07tur6h" path="res://Scripts/Object/ObjectTest.gd" id="1_4vvxp"]
+[ext_resource type="Script" uid="uid://cwr3gqvh6px7a" path="res://Resources/AttackProperties.gd" id="2_rjbub"]
+
+[sub_resource type="Resource" id="Resource_4vvxp"]
+script = ExtResource("2_rjbub")
+impulse_to_target = 10.0
+demage = 0.0
+metadata/_custom_type_script = "uid://cwr3gqvh6px7a"
+
+[sub_resource type="BoxMesh" id="BoxMesh_gty77"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lp0fs"]
+
+[node name="ObjectTest" type="StaticBody3D"]
+script = ExtResource("1_4vvxp")
+attack_properties = SubResource("Resource_4vvxp")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_gty77")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_lp0fs")

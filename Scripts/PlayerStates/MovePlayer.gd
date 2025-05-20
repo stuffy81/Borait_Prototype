@@ -5,8 +5,8 @@ func _on_process(delta):
 	var target_rotation = atan2(axis.x, axis.y)
 
 	if axis.length() > 0:
-		player.velocity.x = axis.x * player.properties_characters.speed * delta
-		player.velocity.z = axis.y * player.properties_characters.speed * delta
+		player.velocity.x = axis.x * player.properties_characters.speed_normal * delta
+		player.velocity.z = axis.y * player.properties_characters.speed_normal * delta
 		player.rotation.y = target_rotation
 	else:
 		player.velocity.x = 0.0

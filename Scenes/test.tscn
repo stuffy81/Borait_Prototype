@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://dmtvt8yb7tx74"]
+[gd_scene load_steps=8 format=3 uid="uid://dmtvt8yb7tx74"]
 
 [ext_resource type="PackedScene" uid="uid://bnwhxs8mv4yx" path="res://Scenes/player.tscn" id="1_lc1oi"]
 [ext_resource type="PackedScene" uid="uid://dgm4usfh07idc" path="res://Scenes/camera.tscn" id="2_8od7v"]
+[ext_resource type="PackedScene" uid="uid://dsxmhlpynpqyv" path="res://Scenes/object_test.tscn" id="3_qc4db"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_8od7v"]
 size = Vector2(100, 100)
@@ -35,11 +36,41 @@ target = NodePath("../Player")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -0.0110652, 0.999939, 0, -0.999939, -0.0110652, 0, 12.2054, 0)
 
-[node name="BodyTEST" type="CharacterBody3D" parent="."]
+[node name="TestEnemies" type="Node3D" parent="."]
+
+[node name="BodyTEST" type="CharacterBody3D" parent="TestEnemies"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.92022, 0.981486, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="BodyTEST"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TestEnemies/BodyTEST"]
 shape = SubResource("CapsuleShape3D_8od7v")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="BodyTEST"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TestEnemies/BodyTEST"]
 mesh = SubResource("CapsuleMesh_qc4db")
+
+[node name="BodyTEST2" type="CharacterBody3D" parent="TestEnemies"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.92022, 0.981486, 8.60725)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TestEnemies/BodyTEST2"]
+shape = SubResource("CapsuleShape3D_8od7v")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TestEnemies/BodyTEST2"]
+mesh = SubResource("CapsuleMesh_qc4db")
+
+[node name="BodyTEST3" type="CharacterBody3D" parent="TestEnemies"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.92022, 0.981486, -7.66182)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TestEnemies/BodyTEST3"]
+shape = SubResource("CapsuleShape3D_8od7v")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TestEnemies/BodyTEST3"]
+mesh = SubResource("CapsuleMesh_qc4db")
+
+[node name="TestObjects" type="Node3D" parent="."]
+
+[node name="ObjectTest" parent="TestObjects" instance=ExtResource("3_qc4db")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8.13025)
+
+[node name="ObjectTest2" parent="TestObjects" instance=ExtResource("3_qc4db")]
+
+[node name="ObjectTest3" parent="TestObjects" instance=ExtResource("3_qc4db")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8.01626)

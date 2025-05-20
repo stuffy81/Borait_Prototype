@@ -8,19 +8,21 @@
 [ext_resource type="Script" uid="uid://g0leeo8w2srt" path="res://Scripts/PlayerStates/MovePlayer.gd" id="5_fkybt"]
 [ext_resource type="Script" uid="uid://1ia4fsnhkemn" path="res://Scripts/PlayerStates/AttackMeleePlayer.gd" id="6_3smsa"]
 [ext_resource type="Script" uid="uid://b6maau87ndfip" path="res://Scripts/PlayerStates/LaunchObjects.gd" id="7_8erm5"]
-[ext_resource type="Script" uid="uid://bqesj33hjsnmc" path="res://Scripts/Area_attack_player.gd" id="9_f1ek2"]
+[ext_resource type="Script" uid="uid://bqesj33hjsnmc" path="res://Scripts/TargetDetector.gd" id="9_f1ek2"]
 
 [sub_resource type="Resource" id="Resource_fkybt"]
 script = ExtResource("2_vgqql")
-speed = 600.0
+speed_normal = 550.0
+speed_with_object = 300.0
 health = 0.0
 speed_tween = 0.2
+impulse_attack = 2.0
+speed_rotation = 2.0
 metadata/_custom_type_script = "uid://ckol6w8wh1kok"
 
 [sub_resource type="Resource" id="Resource_f1ek2"]
 script = ExtResource("3_8erm5")
-impulse_attack = 2.0
-impulse_to_target = 1.0
+impulse_to_target = 10.0
 demage = 0.0
 metadata/_custom_type_script = "uid://cwr3gqvh6px7a"
 
@@ -36,38 +38,7 @@ size = Vector3(0.775, 0.555, 0.69)
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_v0iea"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_3smsa"]
-size = Vector3(6.02, 0.125, 6.115)
-
-[sub_resource type="Animation" id="Animation_vgqql"]
-resource_name = "IDLE"
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("ModelPlayer:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, 0, 0)]
-}
-
-[sub_resource type="Animation" id="Animation_8erm5"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("ModelPlayer:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, 0, 0)]
-}
+size = Vector3(4, 2, 4)
 
 [sub_resource type="Animation" id="Animation_3smsa"]
 resource_name = "ATTACK_MELEE_1"
@@ -117,6 +88,37 @@ tracks/0/keys = {
 "values": [Vector3(0.802851, -1.24267, 0), Vector3(-0.18675, 1.2706, 0)]
 }
 
+[sub_resource type="Animation" id="Animation_vgqql"]
+resource_name = "IDLE"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ModelPlayer:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_8erm5"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ModelPlayer:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_fkybt"]
 _data = {
 &"ATTACK_MELEE_1": SubResource("Animation_3smsa"),
@@ -135,7 +137,6 @@ properties_attack = SubResource("Resource_f1ek2")
 shape = SubResource("CapsuleShape3D_f60y1")
 
 [node name="ModelPlayer" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="Head" type="MeshInstance3D" parent="ModelPlayer"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.40951, 0.256003)

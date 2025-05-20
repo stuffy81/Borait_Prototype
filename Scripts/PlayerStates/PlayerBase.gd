@@ -13,3 +13,5 @@ func _get_axis() -> Vector2:
 func _on_unhandled_key_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ATTACK_MELEE"):
 		state_machine._change_state(player.states_player.ATTACK_MELEE)
+	if event.is_action_pressed("LAUNCH_OBJECTS"):
+		state_machine._change_state(player.states_player.LAUNCH_OBJECTS)

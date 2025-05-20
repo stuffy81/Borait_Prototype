@@ -1,6 +1,7 @@
 class_name AttackeMeleePlayer extends PlayerBase
 
 var enemie : CharacterBody3D
+var properties : AttackProperties = AttackProperties.new()
 
 var array_anims = [
 	player.animations_player.ATTACK_MELEE_1,
@@ -12,36 +13,48 @@ var used_anims = []
 
 func _on_unhandled_key_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ATTACK_MELEE"):
-		_call_attack_methods()
+
+		_rot_to()
+		_impulse_to_attack()
+		_attack_character()
+		_handled_anim()
 
 func _enter():
-	enemie = player.Target_Detector.target
-
+	_get_enemie()
+	_get_properties()
 	_connect_signals(player.animation_player, _finish_attack, "animation_finished")
-	_call_attack_methods()
 
-func _exit():
-	used_anims.clear()
-
-func _call_attack_methods():
 	_rot_to()
 	_impulse_to_attack()
 	_attack_character()
 	_handled_anim()
+
+func _exit():
+	used_anims.clear()
+
+func _on_process(delta):
+	_get_enemie()
+
+func _get_enemie():
+	enemie = player.Target_Detector.target
+
+func _get_properties():
+	if player.Target_Detector.object["attack_properties"]:
+		properties = player.Target_Detector.object["attack_properties"]
 
 func _finish_attack(anim_name):
 	state_machine._change_state(player.states_bases.IDLE)
 
 func _attack_character():
 	if enemie:
-		var direction_to = (player.get_global_transform().basis.z.normalized() - enemie.global_position) * -player.properties_attack.impulse_to_target
-		_impulse_character(enemie , Vector3(direction_to.x, player.global_position.y , direction_to.y))
-		print(player.get_global_transform().basis.z.normalized() - enemie.global_position, "Se impulso al enemigo")
+		var impulse = player.get_global_transform().basis.z.normalized() * properties.impulse_to_target
+		var direction_to = impulse + enemie.global_position
+		_impulse_character(enemie , Vector3(direction_to.x, player.global_position.y , direction_to.z))
 
 func _impulse_to_attack():
 	var tween = create_tween().set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_IN_OUT)
 
-	var impulse = player.properties_attack.impulse_attack
+	var impulse = player.properties_characters.impulse_attack
 	var speed_tween = player.properties_characters.speed_tween
 	var impulse_direction = (player.get_global_transform().basis.z * impulse)  + player.global_position
 	tween.tween_property(player, 'global_position', impulse_direction, speed_tween)
