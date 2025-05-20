@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://bnwhxs8mv4yx"]
+[gd_scene load_steps=23 format=3 uid="uid://bnwhxs8mv4yx"]
 
 [ext_resource type="Script" uid="uid://b51m1hebs7ssv" path="res://Scripts/Player.gd" id="1_v0iea"]
 [ext_resource type="PackedScene" uid="uid://cjab8iohs25rp" path="res://Scenes/state_machine.tscn" id="2_cvnsp"]
@@ -8,17 +8,19 @@
 [ext_resource type="Script" uid="uid://g0leeo8w2srt" path="res://Scripts/PlayerStates/MovePlayer.gd" id="5_fkybt"]
 [ext_resource type="Script" uid="uid://1ia4fsnhkemn" path="res://Scripts/PlayerStates/AttackMeleePlayer.gd" id="6_3smsa"]
 [ext_resource type="Script" uid="uid://b6maau87ndfip" path="res://Scripts/PlayerStates/LaunchObjects.gd" id="7_8erm5"]
+[ext_resource type="Script" uid="uid://bqesj33hjsnmc" path="res://Scripts/Area_attack_player.gd" id="9_f1ek2"]
 
 [sub_resource type="Resource" id="Resource_fkybt"]
 script = ExtResource("2_vgqql")
-speed = 350.0
+speed = 600.0
 health = 0.0
-speed_tween = 0.5
+speed_tween = 0.2
 metadata/_custom_type_script = "uid://ckol6w8wh1kok"
 
 [sub_resource type="Resource" id="Resource_f1ek2"]
 script = ExtResource("3_8erm5")
-impulse_attack = 5.0
+impulse_attack = 2.0
+impulse_to_target = 1.0
 demage = 0.0
 metadata/_custom_type_script = "uid://cwr3gqvh6px7a"
 
@@ -52,22 +54,6 @@ tracks/0/keys = {
 "values": [Vector3(0, 0, 0)]
 }
 
-[sub_resource type="Animation" id="Animation_3smsa"]
-resource_name = "ATTACK_MELEE"
-length = 0.3
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("ModelPlayer:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.1),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector3(0, 0, 0), Vector3(0.546288, 0.942478, 0)]
-}
-
 [sub_resource type="Animation" id="Animation_8erm5"]
 length = 0.001
 tracks/0/type = "value"
@@ -83,9 +69,59 @@ tracks/0/keys = {
 "values": [Vector3(0, 0, 0)]
 }
 
+[sub_resource type="Animation" id="Animation_3smsa"]
+resource_name = "ATTACK_MELEE_1"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ModelPlayer:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0.546288, 0.942478, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_f1ek2"]
+resource_name = "ATTACK_MELEE_2"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ModelPlayer:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0.546288, 0.942478, 0), Vector3(0.802851, -1.24267, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_tx1dd"]
+resource_name = "ATTACK_MELEE_3"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ModelPlayer:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.08),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0.802851, -1.24267, 0), Vector3(-0.18675, 1.2706, 0)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_fkybt"]
 _data = {
-&"ATTACK_MELEE": SubResource("Animation_3smsa"),
+&"ATTACK_MELEE_1": SubResource("Animation_3smsa"),
+&"ATTACK_MELEE_2": SubResource("Animation_f1ek2"),
+&"ATTACK_MELEE_3": SubResource("Animation_tx1dd"),
 &"IDLE": SubResource("Animation_vgqql"),
 &"RESET": SubResource("Animation_8erm5")
 }
@@ -99,6 +135,7 @@ properties_attack = SubResource("Resource_f1ek2")
 shape = SubResource("CapsuleShape3D_f60y1")
 
 [node name="ModelPlayer" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="Head" type="MeshInstance3D" parent="ModelPlayer"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.40951, 0.256003)
@@ -124,12 +161,16 @@ script = ExtResource("6_3smsa")
 [node name="LAUNCH_OBJECTS" type="Node" parent="StateMachine"]
 script = ExtResource("7_8erm5")
 
-[node name="AreaAttack" type="Area3D" parent="."]
+[node name="TargetDetector" type="Area3D" parent="."]
+script = ExtResource("9_f1ek2")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="AreaAttack"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TargetDetector"]
 shape = SubResource("BoxShape3D_3smsa")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 &"": SubResource("AnimationLibrary_fkybt")
 }
+
+[connection signal="body_entered" from="TargetDetector" to="TargetDetector" method="_on_target_entered"]
+[connection signal="body_exited" from="TargetDetector" to="TargetDetector" method="_on_target_exited"]

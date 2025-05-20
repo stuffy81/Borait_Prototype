@@ -10,36 +10,72 @@ var array_anims = [
 
 var used_anims = []
 
+func _on_unhandled_key_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ATTACK_MELEE"):
+		_call_attack_methods()
+
 func _enter():
+	enemie = player.Target_Detector.target
+
 	_connect_signals(player.animation_player, _finish_attack, "animation_finished")
+	_call_attack_methods()
+
+func _exit():
+	used_anims.clear()
+
+func _call_attack_methods():
+	_rot_to()
 	_impulse_to_attack()
+	_attack_character()
+	_handled_anim()
 
 func _finish_attack(anim_name):
-	if anim_name == player.animations_player.ATTACK_MELEE:
-		state_machine._change_state(player.states_bases.IDLE)
+	state_machine._change_state(player.states_bases.IDLE)
+
+func _attack_character():
+	if enemie:
+		var direction_to = (player.get_global_transform().basis.z.normalized() - enemie.global_position) * -player.properties_attack.impulse_to_target
+		_impulse_character(enemie , Vector3(direction_to.x, player.global_position.y , direction_to.y))
+		print(player.get_global_transform().basis.z.normalized() - enemie.global_position, "Se impulso al enemigo")
 
 func _impulse_to_attack():
 	var tween = create_tween().set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_IN_OUT)
-
-	if enemie:
-		var direction = enemie.global_position - player.global_position
-		player.rotation.y = atan2(direction.x , direction.z)
 
 	var impulse = player.properties_attack.impulse_attack
 	var speed_tween = player.properties_characters.speed_tween
 	var impulse_direction = (player.get_global_transform().basis.z * impulse)  + player.global_position
 	tween.tween_property(player, 'global_position', impulse_direction, speed_tween)
 
+func  _impulse_character(node, direction):
+	var tween = create_tween().set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_IN_OUT)
+
+	var speed_tween = player.properties_characters.speed_tween
+	tween.tween_property(node, "global_position", direction, speed_tween)
+
 func _handled_anim():
-	var anim_name
 
 	for anim in array_anims:
-		pass
+		if not anim in used_anims:
+			_run_animations(player.animation_player , anim)
+			used_anims.append(anim)
+			break
 
-func target_entered(body: Node3D):
-	if body != player:
-		enemie = body
+	if used_anims.size() == array_anims.size():
+		used_anims.clear()
 
-func target_exited(body: Node3D):
-	if body != player:
-		enemie = null
+func _rot_to():
+	var rot 
+	var target_rotation
+
+	if enemie:
+		var direction = enemie.global_position - player.global_position
+		target_rotation = atan2(direction.x , direction.z)
+	else:
+		var axis = _get_axis()
+		target_rotation = atan2(axis.x , axis.y)
+
+	if target_rotation:
+		rot = target_rotation
+
+	if rot:
+		player.rotation.y = rot

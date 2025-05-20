@@ -36,10 +36,10 @@ target = NodePath("../Player")
 transform = Transform3D(1, 0, 0, 0, -0.0110652, 0.999939, 0, -0.999939, -0.0110652, 0, 12.2054, 0)
 
 [node name="BodyTEST" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.92022, 0.981486, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="BodyTEST"]
 shape = SubResource("CapsuleShape3D_8od7v")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="BodyTEST"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.76634, 1.83418, 0.47346)
 mesh = SubResource("CapsuleMesh_qc4db")

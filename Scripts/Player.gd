@@ -5,7 +5,7 @@ class_name Player
 @export var properties_attack : AttackProperties = AttackProperties.new()
 
 @onready var animation_player : AnimationPlayer = $AnimationPlayer
-@onready var AreaAttack : Area3D = $AreaAttack
+@onready var Target_Detector : TargetDetector = $TargetDetector
 
 var animations_bases : AnimationsCommons = AnimationsCommons.new()
 var animations_player : AnimationsPlayer = AnimationsPlayer.new()
