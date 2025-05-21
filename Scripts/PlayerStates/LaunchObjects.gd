@@ -1,25 +1,20 @@
 class_name LaunchObjects extends PlayerBase
 
-func _on_unhandled_key_input(event: InputEvent) -> void:
-	if event.is_action_released("LAUNCH_OBJECTS"):
-		state_machine._change_state(player.states_bases.MOVE)
+func _enter():
+	_connect_signals(player.animation_player, _finish_launch, "animation_finished")
+	_run_animations(player.animation_player , player.animations_player.LAUNCH_OBJECTS)
+	_spawn_and_impulse_object()
 
-func _on_process(delta):
-	var axis = _get_axis()
-	var speed = player.properties_characters.speed_with_object
+func _finish_launch(anim_name):
+	state_machine._change_state(player.states_bases.IDLE)
 
-	if axis.length() > 0:
-		var direction = (player.transform.basis.z + Vector3(axis.x,0,axis.y)) * speed * delta
-		player.velocity.z = direction.z
-		player.velocity.x = direction.x
-	else:
-		player.velocity.z = 0
-		player.velocity.x = 0
+func _spawn_and_impulse_object():
+	var dictionary_object = player.Target_Detector.object
 
-	player.move_and_slide()
-
-	_rotate_pointing(player.properties_characters.speed_rotation , delta)
-
-func _rotate_pointing(speed , delta):
-	if _get_axis().x != 0:
-		player.rotation.y += _get_axis().x * speed * delta
+	if dictionary_object.has("path"):
+		var object = load(dictionary_object["path"])
+		var instance = object.instantiate()
+		get_tree().root.add_child(instance)
+		(instance as ObjectInteractable).global_position = player.shoot_position.global_position
+		(instance as ObjectInteractable).remove_from_group("ObjectLaunchable")
+		player.Target_Detector.object.clear()

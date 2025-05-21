@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://bnwhxs8mv4yx"]
+[gd_scene load_steps=25 format=3 uid="uid://bnwhxs8mv4yx"]
 
 [ext_resource type="Script" uid="uid://b51m1hebs7ssv" path="res://Scripts/Player.gd" id="1_v0iea"]
 [ext_resource type="PackedScene" uid="uid://cjab8iohs25rp" path="res://Scenes/state_machine.tscn" id="2_cvnsp"]
@@ -9,15 +9,16 @@
 [ext_resource type="Script" uid="uid://1ia4fsnhkemn" path="res://Scripts/PlayerStates/AttackMeleePlayer.gd" id="6_3smsa"]
 [ext_resource type="Script" uid="uid://b6maau87ndfip" path="res://Scripts/PlayerStates/LaunchObjects.gd" id="7_8erm5"]
 [ext_resource type="Script" uid="uid://bqesj33hjsnmc" path="res://Scripts/TargetDetector.gd" id="9_f1ek2"]
+[ext_resource type="Script" uid="uid://cmk3w7wow6jsf" path="res://Scripts/PlayerStates/PointedMovement.gd" id="9_tx1dd"]
 
 [sub_resource type="Resource" id="Resource_fkybt"]
 script = ExtResource("2_vgqql")
 speed_normal = 550.0
-speed_with_object = 300.0
+speed_anormal = 250.0
 health = 0.0
 speed_tween = 0.2
 impulse_attack = 2.0
-speed_rotation = 2.0
+speed_rotation = 6.0
 metadata/_custom_type_script = "uid://ckol6w8wh1kok"
 
 [sub_resource type="Resource" id="Resource_f1ek2"]
@@ -119,12 +120,29 @@ tracks/0/keys = {
 "values": [Vector3(0, 0, 0)]
 }
 
+[sub_resource type="Animation" id="Animation_gymyn"]
+resource_name = "LAUNCH_OBJECT"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ModelPlayer:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.0666667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0.436332, 0.881391, 0)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_fkybt"]
 _data = {
 &"ATTACK_MELEE_1": SubResource("Animation_3smsa"),
 &"ATTACK_MELEE_2": SubResource("Animation_f1ek2"),
 &"ATTACK_MELEE_3": SubResource("Animation_tx1dd"),
 &"IDLE": SubResource("Animation_vgqql"),
+&"LAUNCH_OBJECT": SubResource("Animation_gymyn"),
 &"RESET": SubResource("Animation_8erm5")
 }
 
@@ -161,6 +179,12 @@ script = ExtResource("6_3smsa")
 
 [node name="LAUNCH_OBJECTS" type="Node" parent="StateMachine"]
 script = ExtResource("7_8erm5")
+
+[node name="POINTED_MOVEMENT" type="Node" parent="StateMachine"]
+script = ExtResource("9_tx1dd")
+
+[node name="ShootPosition" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00239515, 0.108929, 0.770326)
 
 [node name="TargetDetector" type="Area3D" parent="."]
 script = ExtResource("9_f1ek2")
